@@ -20,6 +20,7 @@ before_script:
   - cd $TRAVIS_BUILD_DIR
   - go get -u github.com/dedis/kyber/pairing/bn256
   - go get -u github.com/dedis/kyber/sign/bls
+  - go get -u github.com/stretchr/testify
 
 script:
   - make test
