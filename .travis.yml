@@ -3,7 +3,7 @@ language: go
 go:
   - 1.10.x
 install:
-  - nvm install 6.4.1
+  - nvm install 8.14.0
   - npm install -g source-map-support
   - go get -u github.com/gopherjs/gopherjs
   - npm install --global node-gyp
