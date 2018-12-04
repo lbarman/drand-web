@@ -30,7 +30,7 @@ class Drand {
 }
 ```
 
-Typically, the library is used as is:
+Typically, the library is used like this:
 
 ``` typescript
 const d = new Drand('https://WEBSITE'); // will try to get https://WEBSITE/public for the randomness
@@ -61,11 +61,12 @@ interface IVerifiedRandomness {
 }
 ```
 
-Internally, drand.ts calls a JS lib created from Go with GopherJS, and manually typed. Ideally, at some point this should be replaced with a pure typescript code for verifying the signature.
+Internally, `drand.ts` calls a JS lib created from `Go` with `GopherJS`, and manually typed (`drandjs/drand-go-to-js/api.d.ts`).
+Ideally, at some point this should be replaced with a pure typescript code for verifying the signature.
 
 ## Web
 
-Is a minimal web UI that uses DrandJS to contact a server and periodically show the output.
+This is a minimal web UI that uses DrandJS to contact a server and periodically show the output.
 
 ## How to run
 
@@ -75,10 +76,10 @@ Simply open `web/index.html`, as a recent `drand.js` is already built in `web`.
 
 Prerequisites: gopherjs, yarn
 
-The top-level Makefile exposes `all` and `test`.
+The top-level Makefile exposes `all` and `test`, they do all the things.
 
-Internally, `all` runs `test` and `build` in the `drandjs` folder. 
-In the `drandjs`, this:
+Internally, `all` runs the commands `test` and `build` in the `drandjs` folder. 
+The details follow. In the `drandjs`, this:
 1. installs the npm packages
 2. calls gopherjs to create `drand-go-to-js/api.js`
 3. tests the go and the TS code with `go test` and `jest`
