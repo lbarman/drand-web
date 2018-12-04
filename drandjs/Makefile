@@ -44,3 +44,4 @@ test: node_modules/built
 	./node_modules/tslint/bin/tslint -p .                # test TS/JS lint
 	cd drand-go-to-js && go test --race -v               # test go
 	./node_modules/jest/bin/jest.js	                     # test TS/JS
+	cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
