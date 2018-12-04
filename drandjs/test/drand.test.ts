@@ -3,13 +3,8 @@ import * as constants from '../src/constants';
 import { Drand, IPublicKeyMessage } from '../src/drand';
 import { HttpService, IHttpResponse } from '../src/HTTPService';
 
-function response<T>(data: T): IHttpResponse<T> {
-    return {
-        data: data
-    };
-}
 
-let mockAPI: jest.Mock;
+// constants
 const WEBSERVER = 'http://WEB_SERVER';
 const RANDOMNESS_URL = WEBSERVER + '/' + constants.SERVER_RELATIVE_PATH_GET_RANDOMNESS;
 const PUBLICKEY_URL = WEBSERVER + '/' + constants.SERVER_RELATIVE_PATH_GET_PUBLIC_KEY;
@@ -18,6 +13,14 @@ const PUBLICKEY_URL = WEBSERVER + '/' + constants.SERVER_RELATIVE_PATH_GET_PUBLI
 const PUBLICKEY_FILE = './test/data/publickey.txt';
 const RANDOMNESS_FILE = './test/data/randomness.txt';
 
+// This mockAPI replaces Axios
+let mockAPI: jest.Mock;
+function response<T>(data: T): IHttpResponse<T> {
+    return {
+        data
+    };
+}
+
 describe('Drand can', () => {
 
     beforeEach(() => {
@@ -25,18 +28,19 @@ describe('Drand can', () => {
         HttpService.mock(mockAPI);
     });
 
-    it('contacts the webserver for key', () => {
+    it('contacts the webserver for key', async () => {
         const d = new Drand(WEBSERVER);
         expect(d.getServerUrl()).toEqual(WEBSERVER + '/'); // Should add / to servers
 
-        // serve this file as the answer
+        // Mock API serves this file as the answer
         const publicKeyJson = JSON.parse(readFileSync(PUBLICKEY_FILE, 'utf8'));
-        mockAPI.mockImplementationOnce((_parameters) => {
-            console.log("API called")
+        mockAPI.mockImplementation((_parameters) => {
             return Promise.resolve(response<IPublicKeyMessage>(publicKeyJson));
         });
 
-        d.fetchPublicKey();
+        // fetch and return
+        let key = await d.fetchPublicKey();
+        expect(key).toEqual(publicKeyJson.key);
 
         expect(mockAPI).toHaveBeenCalledTimes(1);
         expect(mockAPI).toHaveBeenCalledWith({
@@ -46,14 +50,31 @@ describe('Drand can', () => {
             responseType: 'json'
         });
 
-        expect(d.getServerPublicKey()).toEqual('test')
+        // fetch and store
+        key = await d.getServerPublicKey();
+        expect(key).toEqual(publicKeyJson.key);
+
+        expect(mockAPI).toHaveBeenCalledTimes(2);
+
+        // now the key should be buffered
+        key = await d.getServerPublicKey();
+        expect(key).toEqual(publicKeyJson.key);
+
+        expect(mockAPI).toHaveBeenCalledTimes(2);
     });
 
-    it('contacts the webserver for randomness', () => {
+    it('contacts the webserver for randomness', async () => {
         const d = new Drand(WEBSERVER);
         expect(d.getServerUrl()).toEqual(WEBSERVER + '/'); // Should add / to servers
 
-        d.fetchRandomness();
+        // Mock API serves this file as the answer
+        const randomnessJson = JSON.parse(readFileSync(RANDOMNESS_FILE, 'utf8'));
+        mockAPI.mockImplementation((_parameters) => {
+            return Promise.resolve(response<IPublicKeyMessage>(randomnessJson));
+        });
+
+        const rnd = await d.fetchRandomness();
+        expect(rnd).toEqual(randomnessJson);
 
         expect(mockAPI).toHaveBeenCalledTimes(1);
         expect(mockAPI).toHaveBeenCalledWith({
@@ -62,5 +83,31 @@ describe('Drand can', () => {
             timeout: 1000,
             responseType: 'json'
         });
+    });
+
+    it('contacts the webserver for public + randomness, and verifies it', async () => {
+        const d = new Drand(WEBSERVER);
+        expect(d.getServerUrl()).toEqual(WEBSERVER + '/'); // Should add / to servers
+
+        // Mock API serves those files as the answer
+        const randomnessJson = JSON.parse(readFileSync(RANDOMNESS_FILE, 'utf8'));
+        const publicKeyJson = JSON.parse(readFileSync(PUBLICKEY_FILE, 'utf8'));
+        mockAPI.mockImplementation((_parameters) => {
+            console.log(_parameters.url);
+            console.log(RANDOMNESS_URL);
+            console.log(RANDOMNESS_URL);
+            if (_parameters.url === RANDOMNESS_URL) {
+                return Promise.resolve(response<IPublicKeyMessage>(randomnessJson));
+            } else if (_parameters.url === PUBLICKEY_URL) {
+                return Promise.resolve(response<IPublicKeyMessage>(publicKeyJson));
+            }
+        });
+
+        const result = await d.fetchAndVerifyRandomness();
+        expect(result.randomness).toEqual(randomnessJson);
+        expect(result.publicKey).toEqual(publicKeyJson.key);
+        expect(result.valid).toEqual(true);
+
+        expect(mockAPI).toHaveBeenCalledTimes(2);
     });
 })

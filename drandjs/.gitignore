@@ -4,3 +4,4 @@ drand-go/api.js
 drand-go/api.js.map
 dist/*.js
 dist/*.js.map
+coverage

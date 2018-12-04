@@ -91,7 +91,7 @@ export class Drand {
 
 
         // TODO: change type in drand-go-to-js
-        return drand_go_api.Verify(randomnessMessage.previous, randomnessMessage.randomness.point, '' + randomnessMessage.round, publicKey.point)
+        return drand_go_api.Verify(randomnessMessage.previous, randomnessMessage.randomness.point, '' + randomnessMessage.round, publicKey.point);
     }
 
     /**
