@@ -1,4 +1,4 @@
-# Drand-web [![Build Status](https://travis-ci.com/lbarman/drand-web.svg?branch=master)](https://travis-ci.com/lbarman/drand-web)
+# Drand-web [![Build Status](https://travis-ci.com/lbarman/drand-web.svg?branch=master)](https://travis-ci.com/lbarman/drand-web) [![Coverage Status](https://coveralls.io/repos/github/lbarman/drand-web/badge.svg?branch=master)](https://coveralls.io/github/lbarman/drand-web?branch=master)
 
 A TS/JS wrapper and a web interface for the drand project.
 
