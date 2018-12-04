@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
-    "outDir": "./",
+    "outDir": "./dist",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
@@ -11,6 +11,6 @@
     "allowUnreachableCode": true,
     "typeRoots": ["./node_modules/@types", "./drand-go"]
   },
-  "include": ["drand.ts"],
+  "include": ["src/drand.ts"],
   "exclude": ["node_modules"]
 }

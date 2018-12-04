@@ -3,8 +3,8 @@
 GO_SOURCE=drand-go-to-js/api.go 
 GOPHERJS_TARGET=drand-go-to-js/api.js
 
-TS_SOURCE=drand.ts
-JS_TARGET=drand.js
+TS_SOURCE=src/drand.ts
+JS_TARGET=dist/drand.js
 
 # installation
 yarn.lock:
@@ -41,5 +41,9 @@ clean:
 run: $(JS_TARGET) $(GOPHERJS_TARGET)
 	node_modules/node/bin/node $(JS_TARGET)
 
-test:
+install-dev:
+	yarn install --dev
+
+test: node_modules/built
 	cd drand-go-to-js && go test --race -v               # test go
+	./node_modules/jest/bin/jest.js	                     # test TS/JS

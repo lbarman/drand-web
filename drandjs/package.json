@@ -1,17 +1,35 @@
 {
-  "name": "drand-web",
-  "version": "1.0.0",
-  "description": "A web interface for drand, the distributed randomness beacon",
-  "main": "index.js",
-  "repository": "git@github.com:lbarman/drand-web.git",
-  "author": "Ludovic Barman <lbarman@protonmail.ch>",
-  "license": "MIT",
-  "private": false,
-  "devDependencies": {
-    "dts-gen": "^0.5.7",
-    "typescript": "^3.2.1"
-  },
-  "dependencies": {
-    "node": "^11.3.0"
-  }
+    "name": "drand-web",
+    "version": "1.0.0",
+    "description": "A web interface for drand, the distributed randomness beacon",
+    "main": "index.js",
+    "repository": "git@github.com:lbarman/drand-web.git",
+    "author": "Ludovic Barman <lbarman@protonmail.ch>",
+    "license": "MIT",
+    "private": false,
+    "devDependencies": {
+        "@types/jest": "^23.3.10",
+        "@types/node": "^10.12.12",
+        "dts-gen": "^0.5.7",
+        "jest": "^23.6.0",
+        "ts-jest": "^23.10.5",
+        "tslint": "^5.11.0",
+        "typescript": "^3.2.1"
+    },
+    "dependencies": {
+        "axios": "^0.18.0",
+        "node": "^11.3.0"
+    },
+    "jest": {
+        "transform": {
+            ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.ts$",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js"
+        ],
+        "clearMocks": true
+    }
 }
