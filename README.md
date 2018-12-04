@@ -1,4 +1,4 @@
-# Drand-web
+# Drand-web [![Build Status](https://travis-ci.com/lbarman/drand-web.svg?branch=master)](https://travis-ci.com/lbarman/drand-web)
 
 A TS/JS wrapper and a web interface for the drand project.
 
