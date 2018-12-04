@@ -1,7 +1,10 @@
-.PHONY: install cleanall build clean
+.PHONY: install cleanall build clean test
 
-SOURCE=drand.ts
-TARGET=drand.js
+GO_SOURCE=drand-go-to-js/api.go 
+GOPHERJS_TARGET=drand-go-to-js/api.js
+
+TS_SOURCE=drand.ts
+JS_TARGET=drand.js
 
 # installation
 yarn.lock:
@@ -18,15 +21,25 @@ cleanall:
 	rm -rf node_modules
 	rm -rf dist
 
-# Create the JS source from TS
-build: $(TARGET)
+# Create the JS bundle from the Go code
+api: $(GOPHERJS_TARGET)
 
-$(TARGET): install $(SOURCE)
-	node_modules/typescript/bin/tsc $(SOURCE) --outFile $(TARGET)
+$(GOPHERJS_TARGET):
+	gopherjs build --tags generic -o $(GOPHERJS_TARGET) $(GO_SOURCE)
+
+# Create the JS source from TS
+build: $(TS_SOURCE)
+
+$(JS_TARGET): install $(TS_SOURCE) $(GOPHERJS_TARGET)
+	node_modules/typescript/bin/tsc                      # no argument, everything is in "tsconfig.json"
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(JS_TARGET)
+	rm -f $(GOPHERJS_TARGET) $(GOPHERJS_TARGET).map
 
 # Dev commands
-run: $(TARGET)
-	node_modules/typescript/bin/node $(TARGET)
+run: $(JS_TARGET) $(GOPHERJS_TARGET)
+	node_modules/node/bin/node $(JS_TARGET)
+
+test:
+	cd drand-go-to-js && go test --race -v               # test go
