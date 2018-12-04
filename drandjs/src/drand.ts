@@ -1,7 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
 import * as drand_go_api from '../drand-go-to-js/api';
 import * as constants from './constants';
-import { HttpRequestParameters, HttpService, IHttpResponse } from './HTTPService';
+import { HttpService, IHttpResponse } from './HTTPService';
 
 export interface IPublicKey {
     gid: number;
@@ -18,7 +17,7 @@ export interface IRandomness {
 }
 
 export interface IRandomnessMessage {
-    round: number;
+    round: string; // number since it is a uint64
     previous: string;
     randomness: IRandomness;
 }
@@ -88,10 +87,7 @@ export class Drand {
      * @param publicKey a PublicKey message, e.g., the output of fetchPublicKey()
      */
     public verifyRandomness(randomnessMessage: IRandomnessMessage, publicKey: IPublicKey): boolean {
-
-
-        // TODO: change type in drand-go-to-js
-        return drand_go_api.Verify(randomnessMessage.previous, randomnessMessage.randomness.point, '' + randomnessMessage.round, publicKey.point);
+        return drand_go_api.Verify(randomnessMessage.previous, randomnessMessage.randomness.point, randomnessMessage.round, publicKey.point);
     }
 
     /**

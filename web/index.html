@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>drand Web Interface</title>
+  <meta name="description" content="drand Web Interface">
+  <meta name="author" content="Ludovic Barman">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Lato:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/sakura.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+</head>
+<body>
+
+  <div>
+        <h1>Drand Web Interface</h1>
+        <p>This is a minimalist web UI.</a>
+        <div id="randomness_blocks">
+            <blockquote>
+              No randomness yet, will try every 5s
+            </blockquote>
+        </div>
+  </div>
+  <!-- The following script is build in the root folder with `make all` -->
+  <script src="drand.js"></script>
+  <script>
+    const drand_deamon_url = 'https://drand.lbarman.ch:443'
+    const drand_js_api = new drand.Drand(drand_deamon_url);
+
+    // simply call drand_js_api.fetchAndVerifyRandomness() (returns a promise), or...
+
+    function randomnessReceived(rnd) {
+        // rnd is a IVerifiedRandomness as defined in REPO/drandjs/src/drand.ts
+        document.getElementById('randomness_blocks').innerHTML = JSON.stringify(rnd);
+    }
+
+    function refresh(){
+        console.log('Refreshing randomness...');
+        drand_js_api.fetchAndVerifyRandomness().then(function(rnd){
+            randomnessReceived(rnd)
+        }).catch(function(err){
+            console.log('Something went wrong. ', err);
+        });
+    }
+
+    setInterval(refresh, 5000);
+    refresh();
+  </script>
+</body>
+</html>

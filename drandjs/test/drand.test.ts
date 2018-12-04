@@ -93,9 +93,6 @@ describe('Drand can', () => {
         const randomnessJson = JSON.parse(readFileSync(RANDOMNESS_FILE, 'utf8'));
         const publicKeyJson = JSON.parse(readFileSync(PUBLICKEY_FILE, 'utf8'));
         mockAPI.mockImplementation((_parameters) => {
-            console.log(_parameters.url);
-            console.log(RANDOMNESS_URL);
-            console.log(RANDOMNESS_URL);
             if (_parameters.url === RANDOMNESS_URL) {
                 return Promise.resolve(response<IPublicKeyMessage>(randomnessJson));
             } else if (_parameters.url === PUBLICKEY_URL) {

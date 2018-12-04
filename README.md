@@ -1,21 +1,87 @@
 # Drand-web
 
-A web interface for the drand project
+A TS/JS wrapper and a web interface for the drand project.
 
+## DrandJS
 
-const d = new Drand('lbarman.ch');
+The main component is a Typescript library that provides the following methods:
+
+``` typescript
+class Drand {
+    constructor(private serverUrl: string): void
+
+    // Fetches and return the public key of the server provided in the constructor
+    public async fetchAndVerifyRandomness(): Promise<IVerifiedRandomness>
+
+    //Fetches and return the randomness from the server provided in the constructor
+    public async fetchRandomness(): Promise<IRandomnessMessage>
+
+    // Fetches the public key of the server provided in the constructor, and stores it
+    public async fetchPublicKey(): Promise<IPublicKey>
+
+    // Verifies a randomness message with a public key
+    public verifyRandomness(msg: IRandomnessMessage, publicKey: IPublicKey): boolean
+
+    //Returns the server URL provided in the constructor
+    public getServerUrl(): string
+
+    // (potentially fetches) and returs the public key of the server provided in the constructor
+    public async getServerPublicKey(): Promise<IPublicKey>
+}
+```
+
+Typically, the library is used as is:
+
+``` typescript
+const d = new Drand('https://WEBSITE'); // will try to get https://WEBSITE/public for the randomness
 d.fetchAndVerifyRandomness().then((data) => console.log(data));
 
-{ publicKey:
-   { gid: 22,
-     point:
-      '017f2254bc09a999661f92457122613adb773a6b7c74333a59bde7dd552a7eac2a79263bb6fb1f3840218f3181218b952e2af35be09edaee66566b458c92609f7571e8bb519c9109055b84f392c9e84f5bb828f988ce0423ce708be1dcf808d9cc63a610352b504115ee38bc23dd259e88a5d1221d53e45c9520be9b601fb4f578' },
-  randomness:
-   { round: 2,
-     previous:
-      '2dbb77ae2c130c524b602338c02e33c246e51a6bc696a168398bfd7bd96c4d231c99933adcd42fe1b32cfec0e8928d708c4dac4e0f19fc58d2b24824555198fd',
-     randomness:
-      { gid: 21,
-        point:
-         '6a3557e04eca0e24a3fc28f11909a9a74de0fc64d28c85879573214a553633783150661555e63f05d7effdef576ecc779124b0413eb3a096290081687471bd2b' } },
-  valid: true }
+// data is a IVerifiedRandomness struct as follows
+interface IVerifiedRandomness {
+    randomness: IRandomnessMessage;
+    publicKey: IPublicKey;
+    valid: boolean;
+}
+
+// ... and could be
+{
+  publicKey: {
+    gid: 22,
+    point: "017f225..."
+  },
+  randomness: {
+    round: 2,
+    previous: "2dbb77ae...",
+    randomness: {
+      gid: 21,
+      point: "6a3557e04..."
+    }
+  },
+  valid: true
+}
+```
+
+Internally, drand.ts calls a JS lib created from Go with GopherJS, and manually typed. Ideally, at some point this should be replaced with a pure typescript code for verifying the signature.
+
+## Web
+
+Is a minimal web UI that uses DrandJS to contact a server and periodically show the output.
+
+## How to run
+
+Simply open `web/index.html`, as a recent `drand.js` is already built in `web`.
+
+## How to build
+
+Prerequisites: gopherjs, yarn
+
+The top-level Makefile exposes `all` and `test`.
+
+Internally, `all` runs `test` and `build` in the `drandjs` folder. 
+In the `drandjs`, this:
+1. installs the npm packages
+2. calls gopherjs to create `drand-go-to-js/api.js`
+3. tests the go and the TS code with `go test` and `jest`
+4. compiles and packs the main typescript file `src/drand.ts`
+5. outputs a JS binary in `dist/drand.js`
+6. in the root folder, copies `drandjs/dist/drand.js` into `web`
