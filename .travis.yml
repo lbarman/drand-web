@@ -18,6 +18,8 @@ before_script:
   - mkdir -p ~/.node_libraries/
   - cp build/Release/syscall.node ~/.node_libraries/syscall.node
   - cd $TRAVIS_BUILD_DIR
+  - go get -u github.com/dedis/kyber/pairing/bn256
+  - go get -u github.com/dedis/kyber/sign/bls
 
 script:
   - make test
