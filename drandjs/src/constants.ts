@@ -1,3 +1,3 @@
-export const SERVER_RELATIVE_PATH_GET_PUBLIC_KEY = 'info/dist_key';
+export const SERVER_RELATIVE_PATH_GET_PUBLIC_KEY = 'api/info/distkey';
 
-export const SERVER_RELATIVE_PATH_GET_RANDOMNESS = 'public';
+export const SERVER_RELATIVE_PATH_GET_RANDOMNESS = 'api/public';
