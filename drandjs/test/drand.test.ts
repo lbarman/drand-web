@@ -28,6 +28,18 @@ describe('Drand can', () => {
         HttpService.mock(mockAPI);
     });
 
+    it.only('manually validates randomness', () => {
+        const d = new Drand('dummy');
+
+        // Mock API serves those files as the answer
+        const randomnessJson = JSON.parse(readFileSync(RANDOMNESS_FILE, 'utf8'));
+        const publicKeyJson = JSON.parse(readFileSync(PUBLICKEY_FILE, 'utf8'));
+
+        const res = d.verifyRandomness(randomnessJson, publicKeyJson.key);
+
+        expect(res).toBe(true);
+    })
+
     it('contacts the webserver for key', async () => {
         const d = new Drand(WEBSERVER);
         expect(d.getServerUrl()).toEqual(WEBSERVER + '/'); // Should add / to servers

@@ -52,7 +52,6 @@ export class Drand {
         const rnd = await this.fetchRandomness();
         const key = await this.getServerPublicKey();
 
-
         const valid = this.verifyRandomness(rnd, key);
 
         const answer: IVerifiedRandomness = {

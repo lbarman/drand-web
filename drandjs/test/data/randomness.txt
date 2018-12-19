@@ -1,8 +1,9 @@
 {
-    "round": 2,
-    "previous": "2dbb77ae2c130c524b602338c02e33c246e51a6bc696a168398bfd7bd96c4d231c99933adcd42fe1b32cfec0e8928d708c4dac4e0f19fc58d2b24824555198fd",
-    "randomness": {
-        "gid": 21,
-        "point": "6a3557e04eca0e24a3fc28f11909a9a74de0fc64d28c85879573214a553633783150661555e63f05d7effdef576ecc779124b0413eb3a096290081687471bd2b"
+    "round":"13849",
+    "previous":"HwVwt4p8PjC/NQlT9MK4t9FUdQ5rF6YwB+QQxpYbPGoLayqNUH2ICArTff5h44oqR86pZQA/IC1YsGobVbmW3Q==",
+    "randomness":
+    {
+        "gid":"BN256_G1",
+        "point":"AYNzlhdjSiT+3QtTMhpqiWQlNNVv+dxLZ+j+Kpo5gq0RxZrsNLsEYIT08cev8AXAzmgOSpNnthBeC5fZNkvWkg=="
     }
 }

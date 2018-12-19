@@ -5,8 +5,9 @@ package main
 import (
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
 	"strconv"
+	"encoding/base64"
+	//"encoding/hex"
 
 	"github.com/dedis/kyber/pairing/bn256"
 	"github.com/dedis/kyber/sign/bls"
@@ -27,33 +28,41 @@ var suite = bn256.NewSuite()
 // Verify previous, randomness and public_key are hexadecimal strings, round is a string representing an int
 func Verify(previous string, randomness string, round string, pubKey string) bool {
 
-	prev, err := hex.DecodeString(previous)
+	prev, err := base64.StdEncoding.DecodeString(previous)
 	if err != nil {
-		println("", err)
+		println("Can't base64-decode 'previous': ", err)
 		return false
 	}
-	iround, _ := strconv.Atoi(round)
+	iround, err := strconv.Atoi(round)
+	if err != nil {
+		println("Can't parse uint64 'round': ", err)
+		return false
+	}
 	msg := Message(prev, uint64(iround))
 
-	data, err := hex.DecodeString(pubKey)
+	data, err := base64.StdEncoding.DecodeString(pubKey)
 	if err != nil {
-		println("", err)
+		println("Can't base64-decode 'pubKey': ", err)
 		return false
 	}
 	pub := suite.G2().Point()
 	if err := pub.UnmarshalBinary(data); err != nil {
-		println(err)
+		println("Can't unmarshall 'pubKey' to group element: ", err)
 		return false
 	}
 
-	sig, err := hex.DecodeString(randomness)
+	sig, err := base64.StdEncoding.DecodeString(randomness)
 	if err != nil {
-		println("", err)
+		println("Can't base64-decode 'randomness': ", err)
 		return false
 	}
+
+	//println("pub", hex.Dump(data))
+	//println("prev", hex.Dump(prev))
+	//println("sig", hex.Dump(sig))
 
 	if err := bls.Verify(suite, pub, msg, sig); err != nil {
-		println("", err)
+		println("BLS-verification failed: ", err)
 		return false
 	}
 	return true
